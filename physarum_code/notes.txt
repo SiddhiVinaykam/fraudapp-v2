@@ -1,0 +1,16 @@
+ Rough plan
+
+ - create a sample solid pipeline
+ - test the pipeline
+ - define an app object
+ - chain app object with step object of the pipeline
+
+ Run build pipeline for testing in the backend
+ - test UI for tekton
+
+ Steps
+ - create an app object
+ - bind it to "Pipeline". Create binding logic which serve all use case.
+ - execute on GKE .  
+ - test on local cluster
+

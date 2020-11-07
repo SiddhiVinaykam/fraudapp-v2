@@ -1,0 +1,41 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: inference-ksvc-promote-canary
+  namespace: tekton-operator
+spec:
+  steps:
+  - args: null
+    env:
+    - name: GOOGLE_APPLICATION_CREDENTIALS
+      value: /secret/physarum-streaming-f892518d5220.json
+    image: gcr.io/physarum-streaming/physarum/customerapp-dev-tekton:latest
+    name: deploy-using-phyml
+    script: '#!/usr/bin/env bash
+
+      export GCP_PROJECT=physarum-streaming
+
+      export GCP_ZONE=us-cluster1-b
+
+      export K8S_CLUSTER=physarum-serving
+
+      export STRIMZI_KAFKA_CLI_KUBECTL_VERSION=v1.18.8
+
+      export STRIMZI_KAFKA_CLI_KUBECTL_PATH=/kubectl/kubectl
+
+      gcloud auth activate-service-account physarum-streaming-user-gcp@$GCP_PROJECT.iam.gserviceaccount.com
+      --key-file=$GOOGLE_APPLICATION_CREDENTIALS --project=$GCP_PROJECT
+
+      gcloud container clusters get-credentials $K8S_CLUSTER --zone $GCP_ZONE --project
+      $GCP_PROJECT
+
+      physarum kfk setup
+
+      customerapp inference ksvc-promote-canary'
+    volumeMounts:
+    - mountPath: /secret
+      name: phy-secret
+  volumes:
+  - name: phy-secret
+    secret:
+      secretName: phy-secret

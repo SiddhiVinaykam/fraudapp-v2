@@ -1,0 +1,9 @@
+apiVersion: tekton.dev/v1beta1
+kind: TaskRun
+metadata:
+  name: inference-ksvc-create-run
+  namespace: tekton-operator
+spec:
+  serviceAccountName: physarum-kubernetes
+  taskRef:
+    name: inference-ksvc-create
